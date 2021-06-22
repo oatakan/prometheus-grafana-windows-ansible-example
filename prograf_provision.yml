@@ -6,8 +6,8 @@
     grafana_security:
       admin_user: "{{ grafana_admin_user }}"
       admin_password: "{{ grafana_admin_password }}"
-    external_prometheus_url: "{{ kube_routes[prometheus] | default('http://' + ansible_host + ':9090') }}"
-    external_grafana_url: "{{ kube_routes[grafana] | default('http://' + ansible_host + ':' + grafana_port) }}"
+    external_prometheus_url: "{{ kube_routes['prometheus'] | default('http://' + ansible_host + ':9090') }}"
+    external_grafana_url: "{{ kube_routes['grafana'] | default('http://' + ansible_host + ':' + grafana_port) }}"
   roles:
     - cloudalchemy.prometheus
     - cloudalchemy.grafana
