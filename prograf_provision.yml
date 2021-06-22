@@ -2,10 +2,20 @@
   hosts: all
   become: yes
   vars:
+    grafana_port: 3000
     grafana_security:
       admin_user: "{{ grafana_admin_user }}"
       admin_password: "{{ grafana_admin_password }}"
+    prometheus_url: "{{ kube_routes[prometheus] | default('http://' + ansible_host + ':9090') }}"
+    grafana_url: "{{ kube_routes[grafana] | default('http://' + ansible_host + ':' + grafana_port) }}"
   roles:
     - cloudalchemy.prometheus
     - cloudalchemy.grafana
     - grafana-windows-node
+
+  post_tasks:
+    - debug:
+        msg: "prometheus dashboard: {{ prometheus_url }}"
+
+    - debug:
+        msg: "grafana dashboard: {{ grafana_url }}"

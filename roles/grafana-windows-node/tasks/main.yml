@@ -3,7 +3,7 @@
 - block:
     - name: create Prometheus datasource
       uri:
-        url: http://{{ ansible_host }}:{{ grafana_api_port }}/api/datasources
+        url: http://{{ ansible_host }}:{{ grafana_port }}/api/datasources
         user: "{{ grafana_admin_user }}"
         password: "{{ grafana_admin_password }}"
         method: POST
@@ -19,7 +19,7 @@
 
     - name: import dashboard
       uri:
-        url: http://{{ ansible_host }}:{{ grafana_api_port }}/api/dashboards/db
+        url: http://{{ ansible_host }}:{{ grafana_port }}/api/dashboards/db
         user: "{{ grafana_admin_user }}"
         password: "{{ grafana_admin_password }}"
         method: POST

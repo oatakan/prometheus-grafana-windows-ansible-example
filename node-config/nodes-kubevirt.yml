@@ -11,11 +11,11 @@ nodes:
       - port: 3000
         name: grafana
         route: yes
-        secure: yes
+        secure: no
       - port: 9090
         name: prometheus
         route: yes
-        secure: yes
+        secure: no
     domain: home.ad
     memory: 8192
     cpu: 2
