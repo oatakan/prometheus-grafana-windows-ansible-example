@@ -21,3 +21,5 @@
         apply:
           delegate_to: "{{ hostvars['prometheus']['ansible_host'] }}"
           connection: ssh
+      vars:
+        ansible_port: "{{ hostvars['prometheus']['ansible_port'] | default('22') }}"
