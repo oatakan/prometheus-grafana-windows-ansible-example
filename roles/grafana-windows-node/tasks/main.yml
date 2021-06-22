@@ -19,11 +19,12 @@
 
     - name: create prometheus datasource
       grafana_datasource:
-        url: http://{{ ansible_host }}:{{ grafana_external_port }}
-        url_username: "{{ grafana_admin_user }}"
-        url_password: "{{ grafana_admin_password }}"
+        grafana_url: http://{{ ansible_host }}:{{ grafana_external_port }}
+        grafana_user: "{{ grafana_admin_user }}"
+        grafana_password: "{{ grafana_admin_password }}"
         validate_certs: no
-        name: openshift_prometheus
+        name: Prometheus
+        org_id: "1"
         ds_type: prometheus
         ds_url: http://localhost:9090
         access: proxy
