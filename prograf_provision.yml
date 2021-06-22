@@ -1,0 +1,11 @@
+- name: deploy and configure prometheus and grafana
+  hosts: all
+  become: yes
+  vars:
+    grafana_security:
+      admin_user: "{{ grafana_admin_user }}"
+      admin_password: "{{ grafana_admin_password }}"
+  roles:
+    - cloudalchemy.prometheus
+    - cloudalchemy.grafana
+    - grafana-windows-node

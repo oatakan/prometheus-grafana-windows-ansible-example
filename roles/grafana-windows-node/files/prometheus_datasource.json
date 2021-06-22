@@ -1,0 +1,24 @@
+{
+  "access": "proxy",
+  "basicAuth": false,
+  "basicAuthPassword": "",
+  "basicAuthUser": "",
+  "database": "",
+  "id": 1,
+  "isDefault": true,
+  "jsonData": {
+      "httpMethod": "POST"
+  },
+  "name": "Prometheus",
+  "orgId": 1,
+  "password": "",
+  "readOnly": false,
+  "secureJsonFields": {},
+  "type": "prometheus",
+  "typeLogoUrl": "",
+  "uid": "EwDdL_gnk",
+  "url": "http://localhost:9090",
+  "user": "",
+  "version": 3,
+  "withCredentials": false
+}

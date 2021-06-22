@@ -1,0 +1,57 @@
+---
+providers:
+  vcenter:
+    datacenter: cloud
+    cluster: mylab
+    resource_pool: manageto
+
+nodes:
+  - name: prograf01
+    role: prograf
+    app_name: prograf_demo
+    environment: dev
+    disk:
+      - size_gb: 30
+        autoselect_datastore: yes
+    networks:
+    - name: mgmt
+      ip: 192.168.1.50
+      netmask: 255.255.255.0
+      gateway: 192.168.1.254
+      domain: home.ad
+      dns_servers:
+      - 192.168.1.254
+      - 8.8.4.4
+    domain: home.ad
+    dns_servers:
+    - 192.168.1.254
+    - 8.8.4.4
+    customization:
+      hostname: prograf01
+      domain: home.ad
+      dns_servers:
+      - 192.168.1.254
+      - 8.8.4.4
+    memory: 8192
+    cpu: 2
+    template: "{{ infra_template_name|default('centos84-x64-v1') }}"
+  - name: winpg1
+    role: windows
+    app_name: prograf_demo
+    environment: dev
+    networks:
+      - name: mgmt
+    domain: home.ad
+    memory: "{{ node_memory | default(4096) }}"
+    cpu: "{{ node_cpu | default(2) }}"
+    template: "{{ win_template_name | default('windows-2019-standard-core') }}"
+    customization:
+      autologon: True
+      autologoncount: 1
+      orgname: Ansible
+      fullname: Ansible
+      timezone: 20
+      password: '{{ ansible_password | default(ansible_ssh_password) }}'
+      runonce:
+        - powershell.exe -command "& $([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1'))) -ForceNewSSLCert -EnableCredSSP"
+        - winrm set winrm/config/service/auth @{CredSSP="true"}

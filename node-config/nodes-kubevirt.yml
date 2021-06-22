@@ -1,0 +1,33 @@
+---
+
+nodes:
+  - name: prograf01
+    role: prograf
+    app_name: prograf_demo
+    disks:
+      - name: prograf01-disk0
+        size: 30GiB
+    ports:
+      - port: 3000
+        name: grafana
+        route: yes
+        secure: yes
+      - port: 9090
+        name: prometheus
+        route: yes
+        secure: yes
+    domain: home.ad
+    memory: 8192
+    cpu: 2
+    user_name: root
+    root_password: '{{ ansible_password | default(ansible_ssh_password) | default("password") }}'
+    template: "{{ infra_template_name | default('centos84-x64-v1') }}"
+  - name: wintest2
+    role: windows
+    app_name: prograf_demo
+    domain: home.ad
+    memory: 4096
+    cpu: 2
+    user_name: root
+    root_password: '{{ ansible_password | default(ansible_ssh_password) | default("password") }}'
+    template: "{{ win_template_name | default('windows-2019-standard-core') }}"

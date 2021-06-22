@@ -1,0 +1,14 @@
+- name: install prometheus windows exporter
+  hosts: all
+  vars:
+    ansible_port: 5986
+    ansible_connection: winrm
+    ansible_winrm_transport: credssp
+    ansible_winrm_server_cert_validation: ignore
+
+  tasks:
+    - name: install prometheus windows exporter
+      win_chocolatey:
+        name: prometheus-windows-exporter.install
+        params:
+          - arguments: '/ListenAddress=9182'

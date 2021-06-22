@@ -1,0 +1,24 @@
+- name: set prometheus host
+  hosts: '*role_prograf'
+  gather_facts: no
+  tasks:
+    - name: set prometheus ip
+      add_host:
+        name: prometheus
+        ansible_host: "{{ ansible_host }}"
+
+    - debug:
+        var: hostvars['prometheus']['ansible_host']
+
+- name: add windows nodes to prometheus
+  hosts: '*role_windows'
+  gather_facts: no
+
+  tasks:
+    - include_role:
+        name: prometheus-add-node
+        apply:
+          delegate_to: "{{ hostvars['prometheus']['ansible_host'] }}"
+          connection: ssh
+      vars:
+        ansible_port: 22

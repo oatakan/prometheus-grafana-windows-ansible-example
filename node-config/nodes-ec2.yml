@@ -1,0 +1,24 @@
+---
+nodes:
+  - name: prograf
+    role: prograf
+    app_name: prograf_demo
+    pod_name: "{{ ec2_name_prefix }}"
+    instance_type: t2.medium
+    image: "{{ ec2_ami_ids['centos8'] | default('ami-02eac2c0129f6376b') }}"
+    volumes:
+      - device_name: /dev/sda1
+        ebs:
+          volume_size: 30
+          delete_on_termination: true
+  - name: windows
+    role: windows
+    app_name: prograf_demo
+    instance_type: t2.large
+    image: "{{ win2019_ami_id|default('ami-0105e6d241a21e66f') }}" #windows 2019
+    volumes:
+      - device_name: /dev/xvda
+        ebs:
+          volume_size: 30
+          delete_on_termination: true
+    user_data: "{{ lookup('template', 'templates/userdata.txt.j2') }}"

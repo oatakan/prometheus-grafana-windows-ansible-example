@@ -1,0 +1,37 @@
+---
+
+- block:
+    - name: create Prometheus datasource
+      uri:
+        url: http://{{ ansible_host }}:{{ grafana_api_port }}/api/datasources
+        user: "{{ grafana_admin_user }}"
+        password: "{{ grafana_admin_password }}"
+        method: POST
+        status_code: 200
+        force_basic_auth: yes
+        body_format: json
+        body: "{{ lookup('file', 'prometheus_datasource.json') }}"
+      register: grafana_datasource_create
+      delegate_to: localhost
+      become: no
+      changed_when: grafana_datasource_create.status in [200]
+      failed_when: grafana_datasource_create.status not in [200, 409]
+
+    - name: import dashboard
+      uri:
+        url: http://{{ ansible_host }}:{{ grafana_api_port }}/api/dashboards/db
+        user: "{{ grafana_admin_user }}"
+        password: "{{ grafana_admin_password }}"
+        method: POST
+        status_code: 200
+        force_basic_auth: yes
+        body_format: json
+        body: "{{ lookup('file', 'windows_node.json') }}"
+      register: grafana_dashboard_import
+      delegate_to: localhost
+      become: no
+      changed_when: grafana_dashboard_import.status in [200]
+      failed_when: grafana_dashboard_import.status not in [200, 412]
+  when:
+    - grafana_admin_user is defined
+    - grafana_admin_password is defined

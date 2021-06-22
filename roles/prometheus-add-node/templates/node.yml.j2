@@ -1,0 +1,6 @@
+- targets:
+{% for node in ansible_play_hosts %}
+    - "{{ hostvars[node].ansible_private_ip | default(hostvars[node].ansible_host) }}:9182"
+{% endfor %}
+  labels:
+    job: 'win-exporter'
