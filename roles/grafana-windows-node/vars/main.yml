@@ -1,0 +1,3 @@
+---
+
+grafana_api_port: "{{ kube_service_ports['grafana'] if (kube_service_ports is defined and kube_service_ports['grafana'] is defined) else ('3000') }}"
