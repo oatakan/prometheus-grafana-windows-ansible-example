@@ -28,6 +28,7 @@
         ds_type: prometheus
         ds_url: http://localhost:9090
         access: proxy
+        is_default: yes
         tls_skip_verify: true
 
     - name: import dashboard
