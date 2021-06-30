@@ -1,0 +1,19 @@
+groups:
+  - name: node
+    rules:
+    - alert: "Disk Usage"
+      expr: round((1-(windows_logical_disk_free_bytes{volume=~".:"} / (windows_logical_disk_size_bytes{volume=~".:"})))* 100) > 85
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Disk usage is too high and over 85% for 1min"
+        description: "The current host {{$labels.instance}}' disk usage is {{ $value }}%"
+    - alert: "Memory Usage"
+      expr: round((1-(windows_os_virtual_memory_free_bytes / (windows_os_virtual_memory_bytes)))* 100) > 85
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Memory usage is too high and over 85% for 1min"
+        description: "The current host {{$labels.instance}}' memory usage is {{ $value }}%"

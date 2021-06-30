@@ -2,16 +2,43 @@
   hosts: all
   become: yes
   vars:
+    alertmanager_external_url: "{{ kube_routes['alertmanager'] | default('http://' + ansible_host + ':9093') }}"
+    alertmanager_receivers:
+      - name: webhook
+        webhook_configs:
+          - send_resolved: false
+            url: http://localhost:5000/webhook
+    alertmanager_route:
+      group_by: [ 'alertname', 'cluster', 'service' ]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      receiver: webhook
+
+    prometheus_alertmanager_config:
+      - scheme: http
+        static_configs:
+          - targets:
+              - 'localhost:9093'
+
     grafana_port: 3000
     grafana_security:
       admin_user: "{{ grafana_admin_user }}"
       admin_password: "{{ grafana_admin_password }}"
+
     external_prometheus_url: "{{ kube_routes['prometheus'] | default('http://' + ansible_host + ':9090') }}"
     external_grafana_url: "{{ kube_routes['grafana'] | default('http://' + ansible_host + ':' + grafana_port|string) }}"
-  roles:
-    - cloudalchemy.prometheus
-    - cloudalchemy.grafana
-    - grafana-windows-node
+
+  tasks:
+    - include_role:
+        name: "{{ role_name }}"
+      loop_control:
+        loop_var: role_name
+      loop:
+        - cloudalchemy.prometheus
+        - cloudalchemy.alertmanager
+        - cloudalchemy.grafana
+        - grafana-windows-node
 
   post_tasks:
     - debug:

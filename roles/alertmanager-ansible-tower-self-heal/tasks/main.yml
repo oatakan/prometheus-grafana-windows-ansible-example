@@ -1,0 +1,41 @@
+---
+
+- name: create alert rule
+  copy:
+    src: system-rules.yaml
+    dest: /etc/prometheus/rules/system.rules
+
+- name: ensure development packages
+  yum:
+    name: "@Development tools"
+    state: present
+
+- name: ensure prereq packages are installed
+  package:
+    name:
+      - python3
+      - python3-devel
+
+- name: ensure prereq python packages are installed
+  pip:
+    name:
+      - flask
+      - gevent
+      - python-dotenv
+
+- name: create webhook service
+  copy:
+    src: webhook.py
+    dest: /root/webhook.py
+
+- name: create prograf-webhook service
+  copy:
+    src: prograf-webhook.service
+    dest: /etc/systemd/system/prograf-webhook.service
+
+- name: reload service
+  systemd:
+    name: prograf-webhook
+    daemon_reload: yes
+    state: started
+    enabled: yes

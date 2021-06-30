@@ -15,4 +15,5 @@
   name: oatakan.openshift-add-auth-config
 
 - src: cloudalchemy.prometheus
+- src: cloudalchemy.alertmanager
 - src: cloudalchemy.grafana

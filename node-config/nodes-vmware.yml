@@ -27,6 +27,7 @@ nodes:
     - 192.168.1.254
     - 8.8.4.4
     customization:
+      hostname: prograf01
       domain: home.ad
       dns_servers:
       - 192.168.1.254
