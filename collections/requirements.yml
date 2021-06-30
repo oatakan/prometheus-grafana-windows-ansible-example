@@ -1,4 +1,5 @@
 ---
 collections:
+  - community.grafana
   - name: awx.awx
     version: 18.0.0

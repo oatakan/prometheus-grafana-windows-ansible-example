@@ -18,7 +18,7 @@
 #      failed_when: grafana_datasource_create.status not in [200, 409]
 
     - name: create prometheus datasource
-      grafana_datasource:
+      community.grafana.grafana_datasource:
         grafana_url: http://{{ ansible_host }}:{{ grafana_external_port }}
         grafana_user: "{{ grafana_admin_user }}"
         grafana_password: "{{ grafana_admin_password }}"
@@ -48,7 +48,7 @@
       failed_when: grafana_dashboard_import.status not in [200, 412]
 
     - name: import prometheus alerts dashboard
-      grafana_dashboard:
+      community.grafana.grafana_dashboard:
         grafana_url: http://{{ ansible_host }}:{{ grafana_external_port }}
         grafana_user: "{{ grafana_admin_user }}"
         grafana_password: "{{ grafana_admin_password }}"
