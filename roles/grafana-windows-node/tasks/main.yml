@@ -31,7 +31,7 @@
         is_default: yes
         tls_skip_verify: true
 
-    - name: import dashboard
+    - name: import windows node dashboard
       uri:
         url: http://{{ ansible_host }}:{{ grafana_external_port }}/api/dashboards/db
         user: "{{ grafana_admin_user }}"
@@ -46,6 +46,15 @@
       become: no
       changed_when: grafana_dashboard_import.status in [200]
       failed_when: grafana_dashboard_import.status not in [200, 412]
+
+    - name: import prometheus alerts dashboard
+      grafana_dashboard:
+        grafana_url: http://{{ ansible_host }}:{{ grafana_external_port }}
+        grafana_user: "{{ grafana_admin_user }}"
+        grafana_password: "{{ grafana_admin_password }}"
+        grafana_api_key: "{{ grafana_api_key }}"
+        dashboard_id: "{{ grafana_prometheus_alerts_dashboard_id }}"
+        dashbord_revision: 1
   when:
     - grafana_admin_user is defined
     - grafana_admin_password is defined
