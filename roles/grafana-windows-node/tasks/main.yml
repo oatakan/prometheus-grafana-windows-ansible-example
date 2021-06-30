@@ -53,7 +53,7 @@
         grafana_user: "{{ grafana_admin_user }}"
         grafana_password: "{{ grafana_admin_password }}"
         dashboard_id: "{{ grafana_prometheus_alerts_dashboard_id }}"
-        dashbord_revision: 1
+        dashboard_revision: 1
   when:
     - grafana_admin_user is defined
     - grafana_admin_password is defined
