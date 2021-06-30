@@ -4,6 +4,8 @@
   copy:
     src: system-rules.yaml
     dest: /etc/prometheus/rules/system.rules
+  notify:
+    - restart prometheus
 
 - name: ensure development packages
   yum:
