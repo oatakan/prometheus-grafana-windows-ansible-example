@@ -47,7 +47,6 @@
     "editable": true,
     "gnetId": 11098,
     "graphTooltip": 1,
-    "id": 3,
     "iteration": 1625063899365,
     "links": [
       {
@@ -557,9 +556,8 @@
         "30d"
       ]
     },
-    "timezone": "",
+    "timezone": "browser",
     "title": "Prometheus Alerts",
-    "uid": "CMw3p1knz",
     "version": 1
   },
   "inputs": [],
