@@ -1,0 +1,26 @@
+---
+
+- name: read promethus config file
+  slurp:
+    src: /etc/prometheus/prometheus.yml
+  register: prometheus_config_file
+  no_log: True
+
+- name: set new job
+  set_fact:
+    new_job: ["{{ lookup('template', 'tower_config.yml') | from_yaml }}"]
+  no_log: True
+
+- name: set new job
+  set_fact:
+    all_jobs:
+      scrape_configs: "{{ new_job + (((prometheus_config_file.content | b64decode | from_yaml).scrape_configs | default([]))|rejectattr('job_name', 'match', new_job[0].job_name)|list) }}"
+  no_log: True
+
+- name: copy file
+  copy:
+    content: "{{ ((prometheus_config_file.content | b64decode) | from_yaml ) | combine(all_jobs) | to_yaml }}"
+    dest: /etc/prometheus/prometheus.yml
+  no_log: True
+  notify:
+    - restart prometheus

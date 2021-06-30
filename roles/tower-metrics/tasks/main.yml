@@ -1,0 +1,8 @@
+---
+
+- include_tasks: pre_flight.yml
+
+- include_tasks: prometheus.yml
+
+- include_tasks: grafana.yml
+

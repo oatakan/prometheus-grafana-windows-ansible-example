@@ -23,7 +23,7 @@
         client_type: confidential
       delegate_to: localhost
 
-    - name: get personal access tokens
+    - name: get tokens
       uri:
         url: "{{ tower_api_url }}/tokens/?description__icontains={{ token_description|urlencode() }}"
         user: "{{ lookup('env', 'TOWER_USERNAME') }}"

@@ -1,0 +1,10 @@
+job_name: 'tower'
+metrics_path: /api/v2/metrics
+scrape_interval: 5s
+scheme: https
+tls_config:
+  insecure_skip_verify: true
+bearer_token: "{{ tower_env_vars.TOWER_OAUTH_TOKEN }}"
+static_configs:
+  - targets:
+    - "{{ tower_env_vars.TOWER_HOST }}"
