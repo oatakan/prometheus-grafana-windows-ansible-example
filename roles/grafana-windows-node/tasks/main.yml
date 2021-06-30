@@ -52,7 +52,6 @@
         grafana_url: http://{{ ansible_host }}:{{ grafana_external_port }}
         grafana_user: "{{ grafana_admin_user }}"
         grafana_password: "{{ grafana_admin_password }}"
-        grafana_api_key: "{{ grafana_api_key }}"
         dashboard_id: "{{ grafana_prometheus_alerts_dashboard_id }}"
         dashbord_revision: 1
   when:
