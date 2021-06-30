@@ -31,7 +31,7 @@
         is_default: yes
         tls_skip_verify: true
 
-    - name: import windows node dashboard
+    - name: import dashboards
       uri:
         url: http://{{ ansible_host }}:{{ grafana_external_port }}/api/dashboards/db
         user: "{{ grafana_admin_user }}"
@@ -40,20 +40,23 @@
         status_code: 200
         force_basic_auth: yes
         body_format: json
-        body: "{{ lookup('file', 'windows_node.json') }}"
+        body: "{{ lookup('file', item) }}"
       register: grafana_dashboard_import
       delegate_to: localhost
       become: no
       changed_when: grafana_dashboard_import.status in [200]
       failed_when: grafana_dashboard_import.status not in [200, 412]
+      loop:
+        - windows_node.json
+        - prometheus_alerts.json
 
-    - name: import prometheus alerts dashboard
-      community.grafana.grafana_dashboard:
-        grafana_url: http://{{ ansible_host }}:{{ grafana_external_port }}
-        grafana_user: "{{ grafana_admin_user }}"
-        grafana_password: "{{ grafana_admin_password }}"
-        dashboard_id: "{{ grafana_prometheus_alerts_dashboard_id }}"
-        dashboard_revision: 1
+#    - name: import prometheus alerts dashboard
+#      community.grafana.grafana_dashboard:
+#        grafana_url: http://{{ ansible_host }}:{{ grafana_external_port }}
+#        grafana_user: "{{ grafana_admin_user }}"
+#        grafana_password: "{{ grafana_admin_password }}"
+#        dashboard_id: "{{ grafana_prometheus_alerts_dashboard_id }}"
+#        dashboard_revision: 1
   when:
     - grafana_admin_user is defined
     - grafana_admin_password is defined
