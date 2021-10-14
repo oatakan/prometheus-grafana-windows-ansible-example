@@ -6,7 +6,7 @@
 
 - name: set total size
   set_fact:
-    total_size_before: "{{ ((drive_total_size.stdout)|int / (1024*1024*1024)) | round(2, 'floor') }}"
+    total_size_before: "{{ ((drive_total_size.stdout_lines[0])|int / (1024*1024*1024)) | round(2, 'floor') }}"
 
 - name: get drive space
   win_shell: Get-PSDrive C | Select-Object Free | ConvertTo-Json
