@@ -4,6 +4,7 @@ nodes:
   - name: prograf01
     role: prograf
     app_name: prograf_demo
+    environment: dev
     disks:
       - name: prograf01-disk0
         size: 30GiB
@@ -21,13 +22,14 @@ nodes:
     cpu: 2
     user_name: root
     root_password: '{{ ansible_password | default(ansible_ssh_password) | default("password") }}'
-    template: "{{ infra_template_name | default('centos84-x64-v1') }}"
-  - name: wintest2
+    template: "{{ infra_template_name | default('centos85-x64-v1') }}"
+  - name: winpg1
     role: windows
     app_name: prograf_demo
+    environment: dev
     domain: home.ad
     memory: 4096
     cpu: 2
-    user_name: root
+    user_name: vagrant
     root_password: '{{ ansible_password | default(ansible_ssh_password) | default("password") }}'
     template: "{{ win_template_name | default('windows-2019-standard-core') }}"

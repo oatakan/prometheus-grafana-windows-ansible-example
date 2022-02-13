@@ -1,0 +1,39 @@
+---
+
+- block:
+  - name: obtain SSO token with using username/password credentials
+    ovirt.ovirt.ovirt_auth:
+      url: "{{ lookup('env', 'OVIRT_URL')|default(ovirt.url, true) }}"
+      username: "{{ lookup('env', 'OVIRT_USERNAME')|default(ovirt.username, true) }}"
+      password: "{{ lookup('env', 'OVIRT_PASSWORD')|default(ovirt.password, true) }}"
+      insecure: yes
+
+  - name: get vm info
+    ovirt.ovirt.ovirt_vm_info:
+      auth: "{{ ovirt_auth }}"
+      pattern: "name={{ inventory_hostname }}"
+      fetch_nested: yes
+      nested_attributes:
+        - disks
+    register: ovirt_vm_info
+
+  - name: expand vm disk to {{ new_disk_size }}
+    ovirt.ovirt.ovirt_disk:
+      auth: "{{ ovirt_auth }}"
+      id: "{{ ovirt_vm_info.ovirt_vms[0].disk_attachments[0].id }}"
+      vm_name: "{{ inventory_hostname }}"
+      size: "{{ new_disk_size }}GiB"
+
+  always:
+    - name: revoke the SSO token
+      ovirt.ovirt.ovirt_auth:
+        url: "{{ lookup('env', 'OVIRT_URL')|default(ovirt.url, true) }}"
+        username: "{{ lookup('env', 'OVIRT_USERNAME')|default(ovirt.username, true) }}"
+        password: "{{ lookup('env', 'OVIRT_PASSWORD')|default(ovirt.password, true) }}"
+        insecure: yes
+        ovirt_auth: "{{ ovirt_auth }}"
+        state: absent
+
+  delegate_to: localhost
+  vars:
+    ansible_connection: local

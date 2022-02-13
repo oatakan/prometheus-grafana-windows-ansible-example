@@ -3,6 +3,7 @@ nodes:
   - name: prograf
     role: prograf
     app_name: prograf_demo
+    environment: dev
     pod_name: "{{ ec2_name_prefix }}"
     instance_type: t2.medium
     image: "{{ ec2_ami_ids['centos8'] | default('ami-02eac2c0129f6376b') }}"
@@ -14,6 +15,7 @@ nodes:
   - name: windows
     role: windows
     app_name: prograf_demo
+    environment: dev
     instance_type: t2.large
     image: "{{ win2019_ami_id|default('ami-0105e6d241a21e66f') }}" #windows 2019
     volumes:

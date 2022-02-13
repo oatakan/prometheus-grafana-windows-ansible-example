@@ -20,19 +20,10 @@
     msg: "free drive space:  {{ free_drive_space_before }} GB ({{ 100 - disk_fullness_percentage|int }}% of total space)"
 
 - block:
-    - name: expand vm disk to {{ total_size_before|int|round + 5 }}
-      vmware_guest:
-        hostname: "{{ lookup('env', 'VMWARE_HOST')|default(providers.vcenter.hostname) }}"
-        username: "{{ lookup('env', 'VMWARE_USER')|default(providers.vcenter.username) }}"
-        password: "{{ lookup('env', 'VMWARE_PASSWORD')|default(providers.vcenter.password) }}"
-        validate_certs: no
-        name: "{{ config.name }}"
-        disk:
-          - size_gb: "{{ total_size_before|int|round + 5 }}"
-            autoselect_datastore: yes
-      delegate_to: localhost
+    - include_role:
+        name: expand-disk-provider
       vars:
-        ansible_connection: local
+        new_disk_size: "{{ total_size_before|int|round + 5 }}"
 
     - name: expand file system
       win_shell: Resize-Partition -DriveLetter c -Size  (Get-PartitionSupportedSize -DriveLetter c).sizeMax -ErrorAction SilentlyContinue

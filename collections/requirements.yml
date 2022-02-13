@@ -1,5 +1,11 @@
 ---
 collections:
+  - name: kubernetes.core
+    version: 2.1.1
+  - name: community.okd
   - community.grafana
   - name: awx.awx
     version: 18.0.0
+  - ovirt.ovirt
+  - community.vmware
+  - amazon.aws

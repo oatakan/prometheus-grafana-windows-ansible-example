@@ -1,0 +1,47 @@
+---
+providers:
+  ovirt:
+    cluster: production
+
+nodes:
+  - name: prograf01
+    role: prograf
+    app_name: prograf_demo
+    environment: dev
+    networks:
+      - name: ovirtmgmt
+        ip: 192.168.1.50
+        netmask: 255.255.255.0
+        gateway: 192.168.1.254
+        nic_name: enp3s0
+        domain: home.ad
+        dns_servers:
+          - 192.168.1.254
+          - 8.8.4.4
+    disks:
+      - name: "{{ infra_template_name|default('centos85-x64-v1') }}"
+        name_prefix: no
+        size: 30GiB
+    domain: home.ad
+    dns_servers:
+    - 192.168.1.254
+    - 8.8.4.4
+    memory: 8192
+    cpu: 2
+    type: server
+    user_name: root
+    root_password: '{{ ansible_password | default(ansible_ssh_password) | default("password") }}'
+    template: "{{ infra_template_name|default('centos85-x64-v1') }}"
+  - name: winpg1
+    role: windows
+    app_name: prograf_demo
+    environment: dev
+    networks:
+      - name: ovirtmgmt
+    domain: home.ad
+    memory: "{{ node_memory | default(4096) }}"
+    cpu: "{{ node_cpu | default(2) }}"
+    type: server
+    user_name: vagrant
+    template: "{{ win_template_name|default('windows-2019-standard-core') }}"
+    sysprep: yes

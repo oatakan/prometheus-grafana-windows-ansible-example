@@ -1,0 +1,15 @@
+---
+
+- name: expand vm disk to {{ new_disk_size }}
+  vmware_guest:
+    hostname: "{{ lookup('env', 'VMWARE_HOST')|default(providers.vcenter.hostname) }}"
+    username: "{{ lookup('env', 'VMWARE_USER')|default(providers.vcenter.username) }}"
+    password: "{{ lookup('env', 'VMWARE_PASSWORD')|default(providers.vcenter.password) }}"
+    validate_certs: no
+    name: "{{ config.name }}"
+    disk:
+      - size_gb: "{{ new_disk_size }}"
+        autoselect_datastore: yes
+  delegate_to: localhost
+  vars:
+    ansible_connection: local
