@@ -30,6 +30,17 @@
     external_grafana_url: "{{ kube_routes['grafana'] | default('http://' + ansible_host + ':' + grafana_port|string) }}"
 
   tasks:
+    # temporary fix until grafana packages are re-signed with SHA256 or SHA512
+    - block:
+        - name: update crypto policies to support SHA1 (needed for grafana rpm)
+          command: update-crypto-policies --set DEFAULT:SHA1
+          changed_when: false
+          failed_when: false
+
+        - name: reboot system
+          reboot:
+      when: ansible_distribution_major_version == '9'
+
     - include_role:
         name: "{{ role_name }}"
       loop_control:

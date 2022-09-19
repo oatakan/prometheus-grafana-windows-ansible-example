@@ -34,7 +34,7 @@ nodes:
       - 8.8.4.4
     memory: 8192
     cpu: 2
-    template: "{{ infra_template_name|default('centos85-x64-v1') }}"
+    template: "{{ infra_template_name|default('rocky86-x64-v1') }}"
   - name: winpg1
     role: windows
     app_name: prograf_demo
