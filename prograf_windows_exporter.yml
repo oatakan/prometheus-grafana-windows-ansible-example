@@ -1,9 +1,10 @@
+---
 - name: install prometheus windows exporter
   hosts: all
 
   tasks:
     - name: install prometheus windows exporter
-      win_chocolatey:
+      chocolatey.chocolatey.win_chocolatey:
         name: prometheus-windows-exporter.install
         params:
-          - arguments: '/ListenAddress=9182'
+          - arguments: /ListenAddress=9182

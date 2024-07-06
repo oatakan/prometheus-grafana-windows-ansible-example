@@ -17,7 +17,7 @@ nodes:
     app_name: prograf_demo
     environment: dev
     instance_type: t2.large
-    image: "{{ win2019_ami_id|default('ami-0105e6d241a21e66f') }}" #windows 2019
+    image: "{{ win2019_ami_id | default('ami-0105e6d241a21e66f') }}" # windows 2019
     volumes:
       - device_name: /dev/xvda
         ebs:

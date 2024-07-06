@@ -1,25 +1,27 @@
+---
 - name: set prometheus host
-  hosts: '*role_prograf'
-  gather_facts: no
+  hosts: "*role_prograf"
+  gather_facts: false
   tasks:
     - name: set prometheus ip
-      add_host:
+      ansible.builtin.add_host:
         name: prometheus
         ansible_host: "{{ ansible_host }}"
         ansible_port: "{{ ansible_port | default('22') }}"
 
-    - debug:
+    - name: show prometheus system hostname
+      ansible.builtin.debug:
         var: hostvars['prometheus']['ansible_host']
 
 - name: add windows nodes to prometheus
-  hosts: '*role_windows'
-  gather_facts: no
-
+  hosts: "*role_windows"
+  gather_facts: false
+  vars:
+    ansible_port: "{{ hostvars['prometheus']['ansible_port'] | default('22') }}"
   tasks:
-    - include_role:
-        name: prometheus-add-node
+    - name: add windows node prometheus
+      ansible.builtin.include_role:
+        name: prometheus_add_node
         apply:
           delegate_to: "{{ hostvars['prometheus']['ansible_host'] }}"
           connection: ssh
-      vars:
-        ansible_port: "{{ hostvars['prometheus']['ansible_port'] | default('22') }}"

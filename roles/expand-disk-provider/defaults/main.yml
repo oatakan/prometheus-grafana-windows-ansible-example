@@ -1,7 +1,0 @@
----
-
-provider: vmware
-
-new_disk_size: ''  #in GB
-vm_name: ''
-ovirt_disk_name: ''

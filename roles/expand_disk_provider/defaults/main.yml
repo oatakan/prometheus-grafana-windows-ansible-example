@@ -1,0 +1,10 @@
+---
+
+expand_disk_provider_provider: "{{ provider | default('vmware') }}"
+
+expand_disk_provider_new_disk_size: "{{ new_disk_size | default('') }}" # in GB
+
+expand_disk_provider_api_version_virtual_machine: "{{ api_version_virtual_machine | default('kubevirt.io/v1') }}"
+expand_disk_provider_target_namespace: "{{ target_namespace | default('openshift-cnv') }}"
+
+expand_disk_provider_kubevirt_disk_name: "{{ kubevirt_disk_name | default('disk0') }}"

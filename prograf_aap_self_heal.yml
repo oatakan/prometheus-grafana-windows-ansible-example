@@ -1,0 +1,6 @@
+---
+- name: configure webhook service for self-healing
+  hosts: all
+  become: true
+  roles:
+    - alertmanager_aap_self_heal

@@ -1,5 +1,0 @@
-- name: configure webhook service for self-healing
-  hosts: all
-  become: yes
-  roles:
-    - alertmanager-ansible-tower-self-heal

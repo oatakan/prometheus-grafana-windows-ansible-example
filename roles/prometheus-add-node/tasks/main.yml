@@ -1,6 +1,0 @@
----
-
-- name: create target nodes
-  template:
-    src: node.yml.j2
-    dest: /etc/prometheus/file_sd/node.yml

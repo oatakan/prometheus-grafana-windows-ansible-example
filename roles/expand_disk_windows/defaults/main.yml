@@ -1,0 +1,7 @@
+---
+
+expand_disk_windows_expand_disk_method: "{{ expand_disk_method | default('module') }}" # module or powershell
+
+expand_disk_windows_disk_fullness_percentage_threshold: "{{ disk_fullness_percentage_threshold | default(80) }}"
+
+expand_disk_windows_provider: "{{ provider | default('vmware') }}"

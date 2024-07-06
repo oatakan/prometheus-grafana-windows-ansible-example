@@ -1,0 +1,8 @@
+---
+
+aap_metrics_default_grafana_external_port: >-
+  {{ kube_service_ports['grafana']
+  if (kube_service_ports is defined and kube_service_ports['grafana'] is defined)
+  else (aap_metrics_grafana_port) }}
+
+aap_metrics_grafana_external_port: "{{ grafana_external_port | default(aap_metrics_default_grafana_external_port) }}"

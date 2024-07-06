@@ -12,29 +12,29 @@ nodes:
     environment: dev
     disk:
       - size_gb: 30
-        autoselect_datastore: yes
+        autoselect_datastore: true
     networks:
-    - name: mgmt
-      ip: 192.168.1.50
-      netmask: 255.255.255.0
-      gateway: 192.168.1.254
-      domain: home.ad
-      dns_servers:
-      - 192.168.1.254
-      - 8.8.4.4
+      - name: mgmt
+        ip: 192.168.1.50
+        netmask: 255.255.255.0
+        gateway: 192.168.1.254
+        domain: home.ad
+        dns_servers:
+          - 192.168.1.254
+          - 8.8.4.4
     domain: home.ad
     dns_servers:
-    - 192.168.1.254
-    - 8.8.4.4
+      - 192.168.1.254
+      - 8.8.4.4
     customization:
       hostname: prograf01
       domain: home.ad
       dns_servers:
-      - 192.168.1.254
-      - 8.8.4.4
+        - 192.168.1.254
+        - 8.8.4.4
     memory: 8192
     cpu: 2
-    template: "{{ infra_template_name|default('rocky86-x64-v1') }}"
+    template: "{{ infra_template_name|default('rhel94-x64-v1') }}"
   - name: winpg1
     role: windows
     app_name: prograf_demo
@@ -44,15 +44,18 @@ nodes:
     domain: home.ad
     memory: "{{ node_memory | default(4096) }}"
     cpu: "{{ node_cpu | default(2) }}"
-    template: "{{ win_template_name | default('windows-2019-standard-core') }}"
+    template: "{{ win_template_name | default('windows-2022-standard-core') }}"
     ansible_port: 5986
     customization:
-      autologon: True
+      autologon: true
       autologoncount: 1
       orgname: Ansible
       fullname: Ansible
       timezone: 20
-      password: '{{ ansible_password | default(ansible_ssh_password) }}'
+      password: "{{ ansible_password | default(ansible_ssh_password) }}"
       runonce:
-        - powershell.exe -command "& $([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1'))) -ForceNewSSLCert -EnableCredSSP"
+        - >
+          powershell.exe -command "& $([scriptblock]::Create((New-Object
+          Net.WebClient).DownloadString('https://raw.githubusercontent.com/ansible/ansible-documentation/devel/examples/scripts/ConfigureRemotingForAnsible.ps1')))
+          -ForceNewSSLCert -EnableCredSSP"
         - winrm set winrm/config/service/auth @{CredSSP="true"}

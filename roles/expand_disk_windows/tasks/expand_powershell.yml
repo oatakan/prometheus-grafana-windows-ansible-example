@@ -1,0 +1,6 @@
+---
+- name: expand file system
+  ansible.windows.win_shell: |
+    Resize-Partition -DriveLetter c -Size
+    (Get-PartitionSupportedSize -DriveLetter c).sizeMax -ErrorAction
+    SilentlyContinue

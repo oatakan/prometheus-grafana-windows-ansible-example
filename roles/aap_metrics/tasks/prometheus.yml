@@ -1,0 +1,29 @@
+---
+- name: read promethus config file
+  ansible.builtin.slurp:
+    src: /etc/prometheus/prometheus.yml
+  register: prometheus_config_file
+  no_log: true
+
+- name: set new job
+  ansible.builtin.set_fact:
+    new_job: ["{{ lookup('template', 'aap_config.yml') | from_yaml }}"]
+  no_log: true
+
+- name: set new job
+  ansible.builtin.set_fact:
+    all_jobs:
+      scrape_configs: "{{ new_job + _jobs }}"
+  no_log: true
+  vars:
+    _scape_configs: "{{ (prometheus_config_file.content | b64decode | from_yaml).scrape_configs }}"
+    _jobs: "{{ (_scape_configs | default([])) | rejectattr('job_name', 'match', new_job[0].job_name) | list }}"
+
+- name: copy file
+  ansible.builtin.copy:
+    content: "{{ ((prometheus_config_file.content | b64decode) | from_yaml) | combine(all_jobs) | to_yaml }}"
+    dest: /etc/prometheus/prometheus.yml
+    mode: "0640"
+  no_log: true
+  notify:
+    - restart prometheus

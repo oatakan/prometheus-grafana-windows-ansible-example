@@ -11,18 +11,18 @@ nodes:
     ports:
       - port: 3000
         name: grafana
-        route: yes
-        secure: no
+        route: true
+        secure: false
       - port: 9090
         name: prometheus
-        route: yes
-        secure: no
+        route: true
+        secure: false
     domain: home.ad
     memory: 8192
     cpu: 2
     user_name: root
     root_password: '{{ ansible_password | default(ansible_ssh_password) | default("password") }}'
-    template: "{{ infra_template_name | default('centos85-x64-v1') }}"
+    template: "{{ infra_template_name | default('rhel94-x64-v1') }}"
   - name: winpg1
     role: windows
     app_name: prograf_demo
@@ -32,4 +32,4 @@ nodes:
     cpu: 2
     user_name: vagrant
     root_password: '{{ ansible_password | default(ansible_ssh_password) | default("password") }}'
-    template: "{{ win_template_name | default('windows-2019-standard-core') }}"
+    template: "{{ win_template_name | default('windows-2022-standard-core') }}"

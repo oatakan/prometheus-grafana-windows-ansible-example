@@ -1,8 +1,9 @@
+---
 - name: remove servers
   hosts: all
-  gather_facts: False
+  gather_facts: false
   connection: local
-  become: no
+  become: false
   vars:
     provider: vmware
   vars_files:
@@ -12,4 +13,4 @@
     - role: ansible-role-{{ provider }}
       role_action: deprovision
       delegate_to: localhost
-      run_once: yes
+      run_once: true

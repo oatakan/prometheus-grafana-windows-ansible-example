@@ -1,0 +1,45 @@
+---
+- name: create alert rule
+  ansible.builtin.copy:
+    src: system-rules.yaml
+    dest: /etc/prometheus/rules/system.rules
+    mode: "0644"
+  notify:
+    - restart prometheus
+
+- name: ensure development packages
+  ansible.builtin.yum:
+    name: "@Development tools"
+    state: present
+
+- name: ensure prereq packages are installed
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-devel
+
+- name: ensure prereq python packages are installed
+  ansible.builtin.pip:
+    name:
+      - flask
+      - gevent
+      - python-dotenv
+
+- name: create webhook service
+  ansible.builtin.copy:
+    src: webhook.py
+    dest: /root/webhook.py
+    mode: "0644"
+
+- name: create prograf-webhook service
+  ansible.builtin.copy:
+    src: prograf-webhook.service
+    dest: /etc/systemd/system/prograf-webhook.service
+    mode: "0644"
+
+- name: reload service
+  ansible.builtin.systemd:
+    name: prograf-webhook
+    daemon_reload: true
+    state: started
+    enabled: true

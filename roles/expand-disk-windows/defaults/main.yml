@@ -1,4 +1,0 @@
----
-
-disk_fullness_percentage_threshold: 80
-disk_fullness_percentage: "{{ 100 - (100*(free_drive_space_before|int)/(total_size_before|int))|int }}"

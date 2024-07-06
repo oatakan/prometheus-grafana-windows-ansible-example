@@ -1,0 +1,51 @@
+---
+- name: expand disk
+  block:
+    - name: authenticate with cluster
+      ansible.builtin.include_role:
+        name: oatakan.openshift-add-auth-config
+      vars:
+        oc_auth_type: api
+
+    - name: find vmi
+      kubernetes.core.k8s_info:
+        api_version: "{{ expand_disk_provider_api_version_virtual_machine }}"
+        kind: VirtualMachineInstance
+        name: "{{ hostvars[inventory_hostname].labels['vm.kubevirt.io/name'] }}"
+        namespace: "{{ expand_disk_provider_target_namespace }}"
+        validate_certs: false
+        api_key: "{{ api_key }}"
+      register: vmi_info
+
+    - name: set dv name (assume pvc has the same name)
+      ansible.builtin.set_fact:
+        dv_name: "{{ (vmi_info.resources[0].spec.volumes | selectattr('name', 'match', expand_disk_provider_kubevirt_disk_name) | first).dataVolume.name }}"
+
+    - name: expand vm disk to {{ expand_disk_provider_new_disk_size }}
+      kubernetes.core.k8s:
+        state: present
+        merge_type: merge
+        validate_certs: false
+        api_key: "{{ api_key }}"
+        definition:
+          apiVersion: v1
+          kind: PersistentVolumeClaim
+          metadata:
+            name: "{{ dv_name }}"
+            namespace: "{{ expand_disk_provider_target_namespace }}"
+          spec:
+            resources:
+              requests:
+                storage: "{{ expand_disk_provider_new_disk_size }}Gi"
+
+  always:
+    - name: clear authentication
+      ansible.builtin.include_role:
+        name: oatakan.openshift-add-auth-config
+      vars:
+        oc_auth_type: api
+        auth_action: logout
+
+  delegate_to: localhost
+  vars:
+    ansible_connection: local

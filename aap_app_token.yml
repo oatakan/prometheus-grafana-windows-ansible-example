@@ -1,0 +1,71 @@
+---
+- name: create app token on AAP
+  hosts: all
+  gather_facts: false
+  vars:
+    aap_api_url: https://{{ lookup('env', 'TOWER_HOST') }}/api/v2
+    token_description: prograf
+    aap_application: prograf
+    aap_organization: demo
+    aap_project: prometheus-grafana-windows-ansible-example
+    aap_template: aa-u7-prometheus-grafana-windows-expand-disk-vmware
+  tasks:
+    - name: ensure application exists
+      awx.awx.application:
+        controller_host: "{{ lookup('env', 'TOWER_HOST') | default('localhost') }}"
+        controller_username: "{{ lookup('env', 'TOWER_USERNAME') }}"
+        controller_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
+        name: "{{ aap_application }}"
+        description: "{{ aap_application }} application"
+        organization: "{{ aap_organization }}"
+        validate_certs: false
+        state: present
+        authorization_grant_type: password
+        client_type: confidential
+      delegate_to: localhost
+
+    - name: get tokens
+      ansible.builtin.uri:
+        url: "{{ aap_api_url }}/tokens/?description__icontains={{ token_description | urlencode() }}"
+        user: "{{ lookup('env', 'TOWER_USERNAME') }}"
+        password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
+        method: GET
+        force_basic_auth: true
+        status_code: [200, 202]
+        return_content: true
+        validate_certs: false
+      register: aap_get_pat_token
+      delegate_to: localhost
+
+    - name: delete a token by its id
+      awx.awx.token:
+        controller_host: "{{ lookup('env', 'TOWER_HOST') | default('localhost') }}"
+        controller_username: "{{ lookup('env', 'TOWER_USERNAME') }}"
+        controller_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
+        existing_token_id: "{{ item.id }}"
+        validate_certs: false
+        state: absent
+      loop: "{{ aap_get_pat_token.json.results | default([]) }}"
+      delegate_to: localhost
+
+    - name: create a token
+      awx.awx.token:
+        controller_host: "{{ lookup('env', 'TOWER_HOST') | default('localhost') }}"
+        controller_username: "{{ lookup('env', 'TOWER_USERNAME') }}"
+        controller_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
+        description: "{{ token_description }}"
+        application: "{{ aap_application }}"
+        scope: write
+        state: present
+        validate_certs: false
+      delegate_to: localhost
+
+    - name: create aap config
+      ansible.builtin.copy:
+        dest: /root/.aap.cfg
+        content: |
+          AAP_HOST={{ lookup('env', 'TOWER_HOST') | default('localhost') }}
+          AAP_OAUTH_TOKEN={{ controller_token.token }}
+          AAP_PROJECT={{ aap_project }}
+          AAP_TEMPLATE={{ aap_template }}
+        mode: "0644"

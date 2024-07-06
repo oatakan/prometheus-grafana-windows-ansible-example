@@ -1,3 +1,4 @@
+---
 - src: https://github.com/oatakan/ansible-role-vmware
   version: origin/master
 
@@ -13,7 +14,3 @@
 - src: https://github.com/oatakan/ansible-role-openshift-add-auth-config.git
   version: origin/master
   name: oatakan.openshift-add-auth-config
-
-- src: cloudalchemy.prometheus
-- src: cloudalchemy.alertmanager
-- src: cloudalchemy.grafana

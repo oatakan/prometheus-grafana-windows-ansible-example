@@ -1,13 +1,14 @@
+---
 - name: windows fill disk
   hosts: all
   vars:
-    free_space_left: 3 #GB
+    free_space_left: 3 # GB
 
   tasks:
     - name: fill disk
-      win_shell: |
+      ansible.windows.win_shell: |
         Remove-Item "$env:temp\bigfile.txt" -ErrorAction Ignore
-        $file_length = (Get-PSDrive c | Select-Object -ExpandProperty Free) - {{ free_space_left|string }}GB
+        $file_length = (Get-PSDrive c | Select-Object -ExpandProperty Free) - {{ free_space_left | string }}GB
         if($file_length -gt 0){
           [io.file]::Create("$env:temp\bigfile.txt").SetLength($file_length).Close
         }

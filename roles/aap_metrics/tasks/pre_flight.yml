@@ -1,0 +1,30 @@
+---
+- name: check to see if .aap.cfg file exists
+  ansible.builtin.stat:
+    path: /root/.aap.cfg
+  register: aap_cfg_file
+
+- name: fail if file not found
+  ansible.builtin.fail:
+    msg: /root/.aap.cfg is not found
+  when: not aap_cfg_file.stat.exists
+
+- name: get aap config
+  ansible.builtin.slurp:
+    src: /root/.aap.cfg
+  register: env_file_content
+  no_log: true
+
+- name: parse contents
+  ansible.builtin.set_fact:
+    aap_env_vars: "{{ _env_file_content_parsed }}"
+  no_log: true
+  vars:
+    _env_file_content: "{{ (env_file_content.content | b64decode).split('\n') }}"
+    _env_file_content_mapped: "{{ _env_file_content | select | map('regex_replace', '([^=]*)=(.*)', '\"\\1\": \"\\2\"') }}"
+    _env_file_content_parsed: "{{ ('{' + _env_file_content_mapped | join(',') + '}') | from_json }}"
+
+- name: token not found
+  ansible.builtin.fail:
+    msg: AAP_OAUTH_TOKEN env variable not found
+  when: (aap_env_vars.AAP_OAUTH_TOKEN | default(None)) is undefined

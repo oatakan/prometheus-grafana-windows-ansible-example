@@ -1,0 +1,7 @@
+---
+- name: pre flight steps
+  ansible.builtin.include_tasks: pre_flight.yml
+- name: configure prometheus
+  ansible.builtin.include_tasks: prometheus.yml
+- name: configure grafana
+  ansible.builtin.include_tasks: grafana.yml

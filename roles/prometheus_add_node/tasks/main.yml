@@ -1,0 +1,6 @@
+---
+- name: create target nodes
+  ansible.builtin.template:
+    src: node.yml.j2
+    dest: /etc/prometheus/file_sd/node.yml
+    mode: "0644"

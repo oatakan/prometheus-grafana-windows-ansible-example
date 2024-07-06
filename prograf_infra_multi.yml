@@ -1,12 +1,14 @@
-- hosts: localhost
-  become: no
+---
+- name: provision nodes
+  hosts: localhost
+  become: false
   vars:
     provider: vmware
   vars_files:
     - node-config/nodes-{{ provider }}.yml
   pre_tasks:
     - name: get amis on ec2
-      include_role:
+      ansible.builtin.include_role:
         name: ec2-find-amis
       when: provider == 'ec2'
   roles:

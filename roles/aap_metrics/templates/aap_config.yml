@@ -1,0 +1,10 @@
+job_name: 'aap'
+metrics_path: /api/v2/metrics
+scrape_interval: 5s
+scheme: https
+tls_config:
+  insecure_skip_verify: true
+bearer_token: "{{ aap_env_vars.AAP_OAUTH_TOKEN }}"
+static_configs:
+  - targets:
+    - "{{ aap_env_vars.AAP_HOST }}"

@@ -1,0 +1,8 @@
+---
+
+grafana_windows_node_default_grafana_external_port: >-
+  {{ kube_service_ports['grafana']
+  if (kube_service_ports is defined and kube_service_ports['grafana'] is defined)
+  else (grafana_windows_node_grafana_port) }}
+
+grafana_windows_node_grafana_external_port: "{{ grafana_external_port | default(grafana_windows_node_default_grafana_external_port) }}"

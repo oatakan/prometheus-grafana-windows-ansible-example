@@ -1,0 +1,5 @@
+---
+- name: expand vm disk to {{ expand_disk_provider_new_disk_size }}
+  amazon.aws.ec2_vol:
+    instance: "{{ ec2_id }}"
+    volume_size: "{{ expand_disk_provider_new_disk_size }}"

@@ -1,0 +1,3 @@
+---
+
+expand_disk_windows_disk_fullness_percentage: "{{ 100 - (100 * (free_drive_space | int) / (total_disk_size | int)) | int }}"

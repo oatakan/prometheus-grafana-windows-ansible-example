@@ -3,8 +3,9 @@ collections:
   - kubernetes.core
   - community.okd
   - community.grafana
-  - name: awx.awx
-    version: 18.0.0
+  - awx.awx
   - ovirt.ovirt
   - community.vmware
   - amazon.aws
+  - grafana.grafana
+  - prometheus.prometheus

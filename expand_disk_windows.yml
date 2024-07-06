@@ -1,7 +1,8 @@
+---
 - name: expand disk on Windows
   hosts: all
   vars:
     provider: vmware
 
   roles:
-    - expand-disk-windows
+    - expand_disk_windows

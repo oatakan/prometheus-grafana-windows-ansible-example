@@ -1,15 +1,16 @@
+---
 - name: deploy and configure prometheus and grafana
   hosts: all
-  become: yes
+  become: true
   vars:
-    alertmanager_external_url: "{{ kube_routes['alertmanager'] | default('http://' + ansible_host + ':9093') }}"
+    alertmanager_web_external_url: "{{ kube_routes['alertmanager'] | default('http://' + ansible_host + ':9093') }}"
     alertmanager_receivers:
       - name: webhook
         webhook_configs:
           - send_resolved: false
             url: http://localhost:5000/webhook
     alertmanager_route:
-      group_by: [ 'alertname', 'cluster', 'service' ]
+      group_by: [alertname, cluster, service]
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 4h
@@ -19,41 +20,34 @@
       - scheme: http
         static_configs:
           - targets:
-              - 'localhost:9093'
+              - localhost:9093
 
     grafana_port: 3000
     grafana_security:
       admin_user: "{{ grafana_admin_user }}"
       admin_password: "{{ grafana_admin_password }}"
 
-    external_prometheus_url: "{{ kube_routes['prometheus'] | default('http://' + ansible_host + ':9090') }}"
-    external_grafana_url: "{{ kube_routes['grafana'] | default('http://' + ansible_host + ':' + grafana_port|string) }}"
+    grafana_alerting: {}
+    prometheus_web_external_url: "{{ kube_routes['prometheus'] | default('http://' + ansible_host + ':9090') }}"
+    grafana_url: "{{ kube_routes['grafana'] | default('http://' + ansible_host + ':' + grafana_port|string) }}"
 
   tasks:
-    # temporary fix until grafana packages are re-signed with SHA256 or SHA512
-    - block:
-        - name: update crypto policies to support SHA1 (needed for grafana rpm)
-          command: update-crypto-policies --set DEFAULT:SHA1
-          changed_when: false
-          failed_when: false
-
-        - name: reboot system
-          reboot:
-      when: ansible_distribution_major_version == '9'
-
-    - include_role:
+    - name: install and configure
+      ansible.builtin.include_role:
         name: "{{ role_name }}"
       loop_control:
         loop_var: role_name
       loop:
-        - cloudalchemy.prometheus
-        - cloudalchemy.alertmanager
-        - cloudalchemy.grafana
-        - grafana-windows-node
+        - prometheus.prometheus.prometheus
+        - prometheus.prometheus.alertmanager
+        - grafana.grafana.grafana
+        - grafana_windows_node
 
   post_tasks:
-    - debug:
-        msg: "prometheus dashboard: {{ external_prometheus_url }}"
+    - name: show prometheus dashboard url
+      ansible.builtin.debug:
+        msg: "prometheus dashboard: {{ prometheus_web_external_url }}"
 
-    - debug:
-        msg: "grafana dashboard: {{ external_grafana_url }}"
+    - name: show grafana dashboard url
+      ansible.builtin.debug:
+        msg: "grafana dashboard: {{ grafana_url }}"

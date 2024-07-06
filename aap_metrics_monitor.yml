@@ -1,0 +1,6 @@
+---
+- name: configure AAP metrics
+  hosts: all
+  gather_facts: false
+  roles:
+    - aap_metrics
