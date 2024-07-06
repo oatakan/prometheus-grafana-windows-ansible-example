@@ -1,6 +1,8 @@
 ---
+
 - name: get the current free space
   ansible.builtin.include_tasks: get_space_{{ expand_disk_windows_expand_disk_method }}.yml
+
 - name: expand disk and filesystem
   block:
     - name: expand disk on the provider
@@ -9,13 +11,12 @@
       vars:
         expand_disk_provider_new_disk_size: "{{ total_disk_size | int | round + 5 }}"
 
-    - name: reboot if on kubevirt
-      ansible.windows.win_reboot:
-      when: provider == 'kubevirt'
+    - name: ensure we have connection
+      ansible.builtin.wait_for_connection:
 
     - name: expand disk
       ansible.builtin.include_tasks: expand_{{ expand_disk_windows_expand_disk_method }}.yml
 
     - name: get free space after expanding disk
       ansible.builtin.include_tasks: get_space_{{ expand_disk_windows_expand_disk_method }}.yml
-  when: expand_disk_windows_disk_fullness_percentage|int > expand_disk_windows_disk_fullness_percentage_threshold|int
+  when: (expand_disk_windows_disk_fullness_percentage | int) > (expand_disk_windows_disk_fullness_percentage_threshold | int)

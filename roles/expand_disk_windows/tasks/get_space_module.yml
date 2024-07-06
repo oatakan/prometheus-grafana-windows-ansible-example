@@ -8,15 +8,17 @@
       ansible.builtin.set_fact:
         total_disk_size: "{{ (_disk.size / 1024 | pow(3)) | round | int }}"
 
-    - name: set free drive space
-      ansible.builtin.set_fact:
-        free_drive_space: "{{ (_volume.size_remaining / 1024 | pow(3)) | round | int }}"
-
     - name: show free drive space
       ansible.builtin.debug:
-        msg: "free drive space:  {{ free_drive_space }} GB ({{ 100 - expand_disk_windows_disk_fullness_percentage | int }}% of total space)"
+        msg: "free drive space:  {{ _free_drive_space }} GB ({{ 100 - _disk_fullness_percentage | int }}% of total space)"
+
+    - name: set free drive space
+      ansible.builtin.set_fact:
+        free_drive_space: "{{ _free_drive_space }}"
 
   vars:
     _disk: '{{ ansible_facts.disks | selectattr("system_disk") | first }}'
     _partition: "{{ _disk.partitions | selectattr('drive_letter', 'match', 'C') | first }}"
     _volume: "{{ _partition.volumes | first }}"
+    _free_drive_space: "{{ (_volume.size_remaining / 1024 | pow(3)) | round | int }}"
+    _disk_fullness_percentage: "{{ 100 - (100 * (_free_drive_space | int) / (total_disk_size | int)) | int }}"

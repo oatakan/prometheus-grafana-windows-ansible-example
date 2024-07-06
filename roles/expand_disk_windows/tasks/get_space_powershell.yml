@@ -11,10 +11,15 @@
   ansible.windows.win_shell: Get-PSDrive C | Select-Object Free | ConvertTo-Json
   register: drive_space
 
-- name: set free drive space
-  ansible.builtin.set_fact:
-    free_drive_space: "{{ ((drive_space.stdout | from_json)['Free'] | int / (1024 * 1024 * 1024)) | round(2, 'floor') }}"
+- name: show and set free drive space
+  block:
+    - name: show free drive space
+      ansible.builtin.debug:
+        msg: "free drive space:  {{ _free_drive_space }} GB ({{ 100 - _disk_fullness_percentage | int }}% of total space)"
 
-- name: show free drive space
-  ansible.builtin.debug:
-    msg: "free drive space:  {{ free_drive_space }} GB ({{ 100 - expand_disk_windows_disk_fullness_percentage | int }}% of total space)"
+    - name: set free drive space
+      ansible.builtin.set_fact:
+        free_drive_space: "{{ _free_drive_space }}"
+  vars:
+    _free_drive_space: "{{ ((drive_space.stdout | from_json)['Free'] | int / (1024 * 1024 * 1024)) | round(2, 'floor') }}"
+    _disk_fullness_percentage: "{{ 100 - (100 * (_free_drive_space | int) / (total_disk_size | int)) | int }}"

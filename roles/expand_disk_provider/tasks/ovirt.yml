@@ -14,8 +14,7 @@
         follow:
           - disk_attachments
           - disk_attachments.disk
-        pattern:
-          name: "{{ inventory_hostname }}"
+        pattern: name="{{ inventory_hostname }}"
       register: ovirt_vm_info
 
     - name: expand vm disk to {{ expand_disk_provider_new_disk_size }}

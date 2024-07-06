@@ -33,6 +33,10 @@ These nodes are provisioned using various cloud providers (e.g., VMware, OpenShi
 
 ![](images/aap_window_expand_disk_job.png)
 
+### AAP Metrics Dashboard on Grafana
+
+![](images/aap_metrics_dashboard.png)
+
 ### Features
 
 * Alerting: Set up alerting in Prometheus using the Node Exporter, which monitors disk usage on the Windows node.
