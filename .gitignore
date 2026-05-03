@@ -1,0 +1,4 @@
+.idea/
+.venv/
+ansible-navigator.log
+.DS_Store

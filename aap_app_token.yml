@@ -11,7 +11,7 @@
     aap_template: aa-u7-prometheus-grafana-windows-expand-disk-vmware
   tasks:
     - name: ensure application exists
-      awx.awx.application:
+      ansible.controller.application:
         controller_host: "{{ lookup('env', 'TOWER_HOST') | default('localhost') }}"
         controller_username: "{{ lookup('env', 'TOWER_USERNAME') }}"
         controller_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
@@ -23,6 +23,10 @@
         authorization_grant_type: password
         client_type: confidential
       delegate_to: localhost
+      environment:
+        AWXKIT_API_BASE_PATH: '/api/controller/'
+        AWXKIT_GATEWAY_BASE_PATH: '/api/gateway/'
+        CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX: '/api/controller/'
 
     - name: get tokens
       ansible.builtin.uri:
@@ -38,7 +42,7 @@
       delegate_to: localhost
 
     - name: delete a token by its id
-      awx.awx.token:
+      ansible.controller.token:
         controller_host: "{{ lookup('env', 'TOWER_HOST') | default('localhost') }}"
         controller_username: "{{ lookup('env', 'TOWER_USERNAME') }}"
         controller_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
@@ -47,9 +51,13 @@
         state: absent
       loop: "{{ aap_get_pat_token.json.results | default([]) }}"
       delegate_to: localhost
+      environment:
+        AWXKIT_API_BASE_PATH: '/api/controller/'
+        AWXKIT_GATEWAY_BASE_PATH: '/api/gateway/'
+        CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX: '/api/controller/'
 
     - name: create a token
-      awx.awx.token:
+      ansible.controller.token:
         controller_host: "{{ lookup('env', 'TOWER_HOST') | default('localhost') }}"
         controller_username: "{{ lookup('env', 'TOWER_USERNAME') }}"
         controller_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
@@ -59,6 +67,10 @@
         state: present
         validate_certs: false
       delegate_to: localhost
+      environment:
+        AWXKIT_API_BASE_PATH: '/api/controller/'
+        AWXKIT_GATEWAY_BASE_PATH: '/api/gateway/'
+        CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX: '/api/controller/'
 
     - name: create aap config
       ansible.builtin.copy:
