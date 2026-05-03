@@ -22,14 +22,16 @@
           - targets:
               - localhost:9093
 
-    grafana_port: 3000
-    grafana_security:
-      admin_user: "{{ grafana_admin_user }}"
-      admin_password: "{{ grafana_admin_password }}"
+    prograf_grafana_port: 3000
+    grafana_ini:
+      server:
+        http_port: "{{ prograf_grafana_port }}"
+      security:
+        admin_user: "{{ grafana_admin_user }}"
+        admin_password: "{{ grafana_admin_password }}"
 
-    grafana_alerting: {}
     prometheus_web_external_url: "{{ kube_routes['prometheus'] | default('http://' + ansible_host + ':9090') }}"
-    grafana_url: "{{ kube_routes['grafana'] | default('http://' + ansible_host + ':' + grafana_port|string) }}"
+    prograf_grafana_url: "{{ kube_routes['grafana'] | default('http://' + ansible_host + ':' + prograf_grafana_port|string) }}"
 
   tasks:
     - name: install and configure
@@ -50,4 +52,4 @@
 
     - name: show grafana dashboard url
       ansible.builtin.debug:
-        msg: "grafana dashboard: {{ grafana_url }}"
+        msg: "grafana dashboard: {{ prograf_grafana_url }}"
