@@ -14,19 +14,3 @@
       role_action: deprovision
       delegate_to: localhost
       run_once: true
-
-  post_tasks:
-    - name: remove declared VMware nodes by name
-      community.vmware.vmware_guest:
-        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
-        username: "{{ lookup('env', 'VMWARE_USER') }}"
-        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
-        validate_certs: false
-        datacenter: "{{ providers.vcenter.datacenter }}"
-        folder: "{{ providers.vcenter.folder | default(omit) }}"
-        name: "{{ item.name }}"
-        state: absent
-      loop: "{{ nodes | default([]) }}"
-      delegate_to: localhost
-      run_once: true
-      when: provider == 'vmware'
